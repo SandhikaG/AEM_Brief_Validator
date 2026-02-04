@@ -64,7 +64,7 @@ class AEMBriefReviewer:
         # Threat & Security
         "ddos": "DDoS", "apt": "APT", "ips": "IPS", "ids": "IDS",
         "waf": "WAF", 
-         #"vpns": "VPNs", "casb": "CASB",
+         "vpns": "VPNs", "casb": "CASB",
         "dlp": "DLP", "deception": "Deception", "rtbh": "RTBH",
         
         # Network & Firewall

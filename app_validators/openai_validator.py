@@ -40,13 +40,28 @@ Task:
    • Lowercase articles (a, an, the), coordinating conjunctions (vs, and, but, or, for, nor), and prepositions ≤4 letters unless they are the first or last word.
 
 CRITICAL EXCEPTIONS - PRESERVE EXACTLY AS-IS:
+ACRONYM PLURALS - NEVER CHANGE THESE:
+   • Pattern: Uppercase acronym + lowercase 's' → VPNs, APIs, URLs, SDKs, VMs, IPs
+   • VPNs must stay VPNs (NOT Vpns, NOT vpns, NOT VPNS)
+   • APIs must stay APIs (NOT Apis, NOT apis, NOT APIS)
+   • If you see VPNs → output VPNs exactly as-is
+   • If you see APIs → output APIs exactly as-is
+   • This applies to ALL acronyms ending in lowercase 's'
    • Fortinet products: ANY word starting with "Forti" (FortiCNAPP, FortiDevOps, FortiCode, FortiPentest, FortiGuard, etc.) - preserve EXACT casing
    • Acronym plurals: Uppercase acronyms ending in lowercase 's' (VPNs, APIs, URLs, etc.) - preserve as-is
    • Technical acronyms: SIEM, SOAR, XDR, EDR, NDR, MDR, IPS, IDS, WAF, DDoS, etc. - keep UPPERCASE
 
 3. If the converted string is character-for-character identical to the input, output exactly: No change
    Otherwise output the converted string—do not drop, add, or reorder any characters, words, or punctuation.
+EXAMPLES OF CORRECT BEHAVIOR:
+❌ WRONG: "Understanding VPNs" → "Understanding Vpns"
+✅ CORRECT: "Understanding VPNs" → "Understanding VPNs"
 
+❌ WRONG: "FortiCNAPP Security" → "Forticnapp Security"
+✅ CORRECT: "FortiCNAPP Security" → "FortiCNAPP Security"
+
+❌ WRONG: "Multiple APIs and VPNs" → "Multiple Apis and Vpns"
+✅ CORRECT: "Multiple APIs and VPNs" → "Multiple APIs and VPNs"
 Zero tolerance for omissions.
 
 Input:
@@ -64,10 +79,25 @@ Sentence Case rules:
 * Generic cybersecurity terms (firewall, threat actor, endpoint detection, etc.) are NOT proper nouns.
 
 CRITICAL EXCEPTIONS - PRESERVE EXACTLY AS-IS:
+ACRONYM PLURALS - NEVER CHANGE THESE:
+   • Pattern: Uppercase acronym + lowercase 's' → VPNs, APIs, URLs, SDKs, VMs, IPs
+   • VPNs must stay VPNs (NOT Vpns, NOT vpns, NOT VPNS)
+   • APIs must stay APIs (NOT Apis, NOT apis, NOT APIS)
+   • If you see VPNs → output VPNs exactly as-is
+   • If you see APIs → output APIs exactly as-is
+   • This applies to ALL acronyms ending in lowercase 's'
 * Fortinet products: ANY word starting with "Forti" (FortiCNAPP, FortiDevOps, FortiCode, FortiPentest, FortiGuard, etc.) - preserve EXACT casing
 * Acronym plurals: Uppercase acronyms ending in lowercase 's' (VPNs, APIs, URLs, SDKs, etc.) - preserve as-is
 * Technical acronyms: SIEM, SOAR, XDR, EDR, NDR, MDR, IPS, IDS, WAF, DDoS, AppSec, DevSecOps, etc. - keep UPPERCASE
+EXAMPLES OF CORRECT BEHAVIOR:
+❌ WRONG: "Understanding VPNs and how they work" → "Understanding Vpns and how they work"
+✅ CORRECT: "Understanding VPNs and how they work" → "Understanding VPNs and how they work"
 
+❌ WRONG: "FortiCNAPP provides security" → "Forticnapp provides security"
+✅ CORRECT: "FortiCNAPP provides security" → "FortiCNAPP provides security"
+
+❌ WRONG: "Multiple APIs and VPNs" → "Multiple Apis and Vpns"
+✅ CORRECT: "Multiple APIs and VPNs" → "Multiple APIs and VPNs"
 Input:
 {text}
 
@@ -99,7 +129,33 @@ If no unknown terms, respond:
 CLEAR
 
 Output:"""
-
+    def _fix_acronym_plurals(self, text: str) -> str:
+        """
+        Post-process OpenAI output to fix common acronym plural mistakes.
+        Fixes: Vpns → VPNs, Apis → APIs, Urls → URLs, etc.
+        """
+        import re
+        
+        # Common acronym patterns that should be uppercase + lowercase 's'
+        acronym_patterns = {
+            r'\bVpns\b': 'VPNs',
+            r'\bApis\b': 'APIs',
+            r'\bUrls\b': 'URLs',
+            r'\bSdks\b': 'SDKs',
+            r'\bVms\b': 'VMs',
+            r'\bIps\b': 'IPs',
+            r'\bIds\b': 'IDs',
+            r'\bFaqs\b': 'FAQs',
+            r'\bPdfs\b': 'PDFs',
+            r'\bCsvs\b': 'CSVs',
+            r'\bSlas\b': 'SLAs',
+            r'\bKpis\b': 'KPIs',
+        }
+        
+        for pattern, replacement in acronym_patterns.items():
+            text = re.sub(pattern, replacement, text)
+        
+        return text
     def __init__(self, api_key: str, fortinet_shorthands: Dict[str, str]):
         """Initialize OpenAI validator."""
         self.client = OpenAI(api_key=api_key)
@@ -129,7 +185,7 @@ Output:"""
             )
             
             result = response.choices[0].message.content.strip()
-            
+            result = self._fix_acronym_plurals(result)
             if result == "No change":
                 return True, text, "Already in correct Title Case"
             else:
@@ -163,6 +219,7 @@ Output:"""
             )
             
             result = response.choices[0].message.content.strip()
+            result = self._fix_acronym_plurals(result)
             
             if result == "No change":
                 return True, text, "Already in correct Sentence case"
