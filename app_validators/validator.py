@@ -118,6 +118,7 @@ class AEMBriefReviewer:
         """Normalize Fortinet-approved shorthands and preserve Forti* products."""
         if not text:
             return text
+    
 
         def replace(match):
             prefix = match.group(1) or ""
@@ -136,19 +137,31 @@ class AEMBriefReviewer:
         pattern = r'(\()?(\b[a-zA-Z\-]+\b)(\)?\??)'
         return re.sub(pattern, replace, text)            
         
-    def _normalize_fortinet_shorthands(self, text: str) -> str:
-        """Normalize Fortinet-approved shorthands."""
-        if not text:
-            return text
-
-        def replace(match):
-            prefix = match.group(1) or ""
-            core = match.group(2).lower()
-            suffix = match.group(3) or ""
-            return f"{prefix}{self.FORTINET_SHORTHANDS.get(core, match.group(2))}{suffix}"
-
-        pattern = r'(\()?(\b[a-zA-Z\-]+\b)(\)?\??)'
-        return re.sub(pattern, replace, text)
+    def _fix_acronym_plurals_rule_based(self, text: str) -> str:
+        """Fix common acronym plural mistakes in rule-based validation."""
+        import re
+        
+        # Pattern: Word boundary + Capital letter + lowercase letters + lowercase 's' + word boundary
+        # This catches: Vpns, Apis, Urls, Sdks, Vms, Ips, Faqs, etc.
+        acronym_fixes = {
+            r'\bVpns\b': 'VPNs',
+            r'\bApis\b': 'APIs', 
+            r'\bUrls\b': 'URLs',
+            r'\bSdks\b': 'SDKs',
+            r'\bVms\b': 'VMs',
+            r'\bIps\b': 'IPs',
+            r'\bIds\b': 'IDs',
+            r'\bFaqs\b': 'FAQs',
+            r'\bPdfs\b': 'PDFs',
+            r'\bCsvs\b': 'CSVs',
+            r'\bSlas\b': 'SLAs',
+            r'\bKpis\b': 'KPIs',
+        }
+        
+        for pattern, replacement in acronym_fixes.items():
+            text = re.sub(pattern, replacement, text)
+        
+        return text
 
     def review_brief(self, brief_data: Dict[str, Any]) -> List[ValidationResult]:
         """Main validation with hybrid support."""
@@ -221,6 +234,7 @@ class AEMBriefReviewer:
                 corrected_words.append(corrected)
         
         corrected_text = ' '.join(corrected_words)
+        corrected_text = self._fix_acronym_plurals_rule_based(corrected_text)
         return (text == corrected_text), corrected_text
     
     def _validate_title_case(self, text: str) -> tuple[bool, str]:
@@ -269,6 +283,7 @@ class AEMBriefReviewer:
                 corrected_words.append(corrected)
         
         corrected_text = ' '.join(corrected_words)
+        corrected_text = self._fix_acronym_plurals_rule_based(corrected_text)
         return (text == corrected_text), corrected_text
     
     def _validate_sentence_case(self, text: str) -> tuple[bool, str]:
@@ -341,6 +356,7 @@ class AEMBriefReviewer:
             sentence_start = word.rstrip().endswith(('.', '!', '?'))
         
         corrected_text = ' '.join(corrected_words)
+        corrected_text = self._fix_acronym_plurals_rule_based(corrected_text)
         return (text == corrected_text), corrected_text
     
     # === VALIDATION METHODS WITH HYBRID SUPPORT ===
