@@ -433,7 +433,8 @@ def main():
             st.markdown("---")
             st.subheader("❌ Failed Items")
             
-            reviewer = AEMBriefReviewer()
+            reviewer = AEMBriefReviewer(openai_api_key=OPENAI_API_KEY)
+
             
             failed_results = [r for r in results if r['status'] != Status.ACCEPTED.value]
             
