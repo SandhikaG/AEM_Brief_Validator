@@ -6,14 +6,22 @@ Contains API keys and environment variables
 import os
 from dotenv import load_dotenv
 
-# Load environment variables
+# Load local environment variables (.env)
 load_dotenv()
 
-# Anthropic API Key (for future content validation if needed)
-ANTHROPIC_API_KEY = os.getenv('ANTHROPIC_API_KEY', '')
+def get_secret(key: str) -> str:
+    """
+    Fetch secret from Streamlit (cloud) or .env (local)
+    """
+    try:
+        import streamlit as st
+        if key in st.secrets:
+            return st.secrets[key]
+    except Exception:
+        pass
 
-# Gemini API Key (if you were using it before)
-GEMINI_API_KEY = os.getenv('GEMINI_API_KEY', '')
+    return os.getenv(key, '')
 
-# OpenAI API Key (for hybrid validation)
-OPENAI_API_KEY = os.getenv('OPENAI_API_KEY', '')
+# API Keys
+
+OPENAI_API_KEY = get_secret("OPENAI_API_KEY")
