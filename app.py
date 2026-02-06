@@ -446,10 +446,10 @@ def main():
                     location=r['location'],
                     status=Status(r['status']),
                     details=r['details'],
-                    category=r['category'],
-                    ai_validated=r.get('ai_validated', False),
-                    ai_result=r.get('ai_result', ''),
-                    unknown_terms=r.get('unknown_terms')
+                    category=r['category']
+                    # ai_validated=r.get('ai_validated', False),
+                    # ai_result=r.get('ai_result', ''),
+                    # unknown_terms=r.get('unknown_terms')
                 )
                 result_objects.append(obj)
             
