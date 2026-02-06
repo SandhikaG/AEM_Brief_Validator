@@ -168,17 +168,6 @@ class AEMBriefReviewer:
         self.results = []
         self.unknown_terms_report = {}
         
-        # # Scan for unknown terms if hybrid enabled
-        # if self.hybrid_validator:
-        #     print("🔍 Scanning for unknown terms with OpenAI...")
-        #     try:
-        #         self.unknown_terms_report = self.hybrid_validator.scan_all_unknown_terms(brief_data)
-        #         if self.unknown_terms_report:
-        #             print(f"⚠ Found unknown terms in {len(self.unknown_terms_report)} sections")
-        #     except Exception as e:
-        #         print(f"✗ Unknown terms scan failed: {e}")
-        
-        # Run all validations
         self._validate_meta_title(brief_data.get('meta_title', ''))
         self._validate_meta_description(brief_data.get('meta_description', ''))
         self._validate_h1(brief_data.get('h1', ''))

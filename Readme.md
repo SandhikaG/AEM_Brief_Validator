@@ -1,4 +1,4 @@
-# AEM  Brief Validator
+# Fortinet Content Brief Validator
 
 A comprehensive validation tool for Fortinet brief documents that ensures compliance with AEM (Adobe Experience Manager) formatting standards. The tool supports both rule-based and AI-powered validation using OpenAI's GPT models.
 
@@ -10,7 +10,7 @@ A comprehensive validation tool for Fortinet brief documents that ensures compli
 - **Multiple Case Types**: Validates Capital Case, Title Case, and Sentence case formatting
 - **Fortinet-Specific Rules**: Built-in dictionary of 80+ Fortinet products and cybersecurity terms
 
-### AI-Powered Validation (Optional)
+### AI-Powered Validation
 - **Hybrid Validation**: Combines rule-based validation with OpenAI GPT-4 for enhanced accuracy
 - **Smart Pattern Recognition**: Automatically preserves Fortinet product names (FortiCNAPP, FortiDevOps, etc.)
 - **Acronym Handling**: Correctly handles technical acronyms (VPNs, APIs, SIEM, XDR, etc.)

@@ -291,7 +291,7 @@ def main():
     """Main Streamlit application."""
     
     st.set_page_config(
-        page_title="AEM Brief Validator",
+        page_title="Fortinet Content Brief Validator",
         page_icon="📋",
         layout="wide",
         initial_sidebar_state="collapsed"
@@ -306,9 +306,9 @@ def main():
     # if OPENAI_API_KEY:
     #     st.success("✅ OpenAI AI Validation Enabled")
     # else:
-    #     st.warning("⚠️ OpenAI API key not found - Using rule-based validation only")
+    #     st.warning("⚠️ OpenAI API key not found-Using rule-based validation only")
     
-    st.title("📋 AEM Brief Validator")
+    st.title("📋 Fortinet Content Brief Validator")
     st.header("Upload Document or Enter URL")
     
     if st.session_state.brief_data or st.session_state.validation_results:
