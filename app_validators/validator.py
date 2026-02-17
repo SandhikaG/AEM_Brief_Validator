@@ -212,12 +212,21 @@ class AEMBriefReviewer:
                 # Preserve exact casing for all Forti* products
                 corrected_words.append(word)
                 continue
+        
             if word.isupper() and len(word) > 1:
                 corrected_words.append(word)
             elif word.lower() == 'faqs':
                 corrected_words.append('FAQs')
             elif word.lower() == 'vs':
                 corrected_words.append('Vs')
+             #  GENERIC RULE: Capitalize ALL parts of hyphenated words
+            elif '-' in clean_word:
+                parts = clean_word.split('-')
+                capitalized_parts = [
+                    p.capitalize() if p else p for p in parts
+                ]
+                corrected_words.append('-'.join(capitalized_parts))
+                continue    
             else:
                 corrected = word[0].upper() + word[1:].lower() if len(word) > 1 else word.upper()
                 corrected_words.append(corrected)
