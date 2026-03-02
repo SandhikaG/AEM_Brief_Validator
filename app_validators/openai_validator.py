@@ -75,7 +75,7 @@ Output:"""
 Task: convert the provided string to exact US professional English Sentence Case and return ONLY the result or "No change" if already correct.
 
 Sentence Case rules:
-* Capitalize the first word and proper nouns only.
+* Capitalize the first word and proper nouns (e.g., Gordon-Loeb, NIST, Fortinet).
 * Generic cybersecurity terms (firewall, threat actor, endpoint detection, etc.) are NOT proper nouns.
 
 CRITICAL EXCEPTIONS - PRESERVE EXACTLY AS-IS:

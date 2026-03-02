@@ -330,6 +330,11 @@ class AEMBriefReviewer:
                     corrected_words.append(word)
                 sentence_start = word.rstrip().endswith(('.', '!', '?'))
                 continue
+            # ✅ Preserve technical camelCase or mixed case words (GraphQL, RESTful, API-first)
+            elif any(c.isupper() for c in clean_word[1:]):
+                corrected_words.append(word)
+                sentence_start = word.rstrip().endswith(('.', '!', '?'))
+                continue
             
             # Lowercase any uppercase words (except abbreviations)
             has_caps = any(c.isupper() for c in clean_word)
@@ -589,8 +594,8 @@ class AEMBriefReviewer:
         if current_text == recommended_text:
             return "No change needed"  # ✅ FIX: Don't show "See Recommended"
         
-        current_words = current_text.split()
-        recommended_words = recommended_text.split()
+        current_words = re.findall(r'\S+', current_text)
+        recommended_words = re.findall(r'\S+', recommended_text)
         
         changes = []
         max_length = max(len(current_words), len(recommended_words))
