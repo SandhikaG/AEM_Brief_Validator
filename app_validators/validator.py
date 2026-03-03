@@ -506,6 +506,10 @@ class AEMBriefReviewer:
                 
                 final_valid = hybrid_result['ai_valid']
                 final_corrected = hybrid_result['final_recommendation']
+                if text.strip() == final_corrected.strip().strip('"').strip("'"):
+                    final_valid = True
+                else:
+                    final_valid = hybrid_result['ai_valid']
                 
                 self.results.append(ValidationResult(
                     "Product Nav Tab", "Title Case", text,
@@ -529,45 +533,37 @@ class AEMBriefReviewer:
         self.results.append(ValidationResult("CTA Text", "Sentence case", text,
                                              Status.ACCEPTED if is_valid else Status.REJECTED,
                                              f'"{corrected}"', "CTA"))
-
     def generate_failed_items_table(self, validation_results):
-        """Generate failed items table - ONLY includes actual failures."""
+        """Generate failed items table - show ALL rejected items."""
         failed_items = []
-        
+
         for result in validation_results:
-            if result.status != Status.ACCEPTED:
-                # Check if current and recommended are actually different
-                current_text = result.location.strip()
-                recommended_text = result.details.strip().strip('"').strip("'")
-                # ✅ SKIP if empty location or details
-                if not current_text or not recommended_text:
-                    continue
-                # ✅ SKIP if texts are identical (false failure)
-                if current_text == recommended_text:
-                    continue
-                
+            # Only check status
+            if result.status == Status.REJECTED:
+
+                current_text = result.location.strip() if result.location else ""
+                recommended_text = result.details.strip().strip('"').strip("'") if result.details else ""
+
                 fix_detail = self._extract_fix_detail(result)
-                
-                # ✅ SKIP if no changes detected
-                if fix_detail in ["No change needed", "No changes detected"]:
-                    continue
-                
+
                 row = {
                     'Category': self._get_category(result.use_case),
                     'Type': result.use_case,
-                    'Current': result.location if result.location else '',
+                    'Current': current_text,
                     'Fix': fix_detail,
-                    'Recommended': result.details.strip('"').strip("'") if result.details else ''
+                    'Recommended': recommended_text
                 }
-                
+
                 if result.ai_validated:
                     row['AI'] = '✓'
+
                 if result.unknown_terms:
                     row['Unknown'] = ', '.join(result.unknown_terms)
-                
+
                 failed_items.append(row)
-        
+
         return pd.DataFrame(failed_items)
+
 
     def _get_category(self, use_case: str) -> str:
         """Map use case to category."""

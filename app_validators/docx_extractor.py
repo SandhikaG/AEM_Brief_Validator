@@ -347,28 +347,34 @@ class DOCXExtractor:
         
         print(f"DEBUG: Total FAQs extracted: {len(faqs['questions'])}")
         return faqs
-    
     def _extract_product_nav(self) -> List[Dict[str, str]]:
-        """Extract Product Navigation tabs from table or text."""
+        """Extract Product Navigation tabs from correct table."""
         tabs = []
-        
-        if len(self.doc.tables) >= 3:
-            prod_nav_table = self.doc.tables[2]
-            for row_idx, row in enumerate(prod_nav_table.rows):
-                if row_idx == 0:
-                    continue
-                cells = [cell.text.strip() for cell in row.cells]
-                if len(cells) >= 2:
-                    recommended = cells[1]
-                    section = cells[2] if len(cells) > 2 else ''
-                    if recommended and recommended not in ['', 'Recommended']:
-                        tabs.append({
-                            'text': recommended,
-                            'linked_section': section
-                        })
-        
+
+        for table in self.doc.tables:
+            # Check header row
+            header_cells = [cell.text.strip().lower() for cell in table.rows[0].cells]
+
+            if "existing" in header_cells and "recommended" in header_cells:
+                # This is likely the Product Navigation table
+                for row in table.rows[1:]:
+                    cells = [cell.text.strip() for cell in row.cells]
+
+                    if len(cells) >= 2:
+                        recommended = cells[1]
+                        section = cells[2] if len(cells) > 2 else ""
+
+                        if recommended and recommended.lower() != "recommended":
+                            tabs.append({
+                                "text": recommended,
+                                "linked_section": section
+                            })
+
+                break  # stop after correct table found
+
+        print(f"DEBUG: Extracted {len(tabs)} Product Nav Tabs")
         return tabs
-    
+   
     def _extract_cta(self) -> Dict[str, str]:
         """Extract CTA section - paragraphs immediately before FAQ section."""
         cta = {

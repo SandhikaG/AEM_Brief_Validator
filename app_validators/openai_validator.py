@@ -63,6 +63,10 @@ EXAMPLES OF CORRECT BEHAVIOR:
 ❌ WRONG: "Multiple APIs and VPNs" → "Multiple Apis and Vpns"
 ✅ CORRECT: "Multiple APIs and VPNs" → "Multiple APIs and VPNs"
 Zero tolerance for omissions.
+• Fortinet product names must remain EXACTLY as official branding.
+• Any occurrence of the product name "Fortinet Security Fabric" must remain EXACTLY as official branding.
+• Never change the casing of "Security" or "Fabric" when they are part of "Fortinet Security Fabric".
+• If the phrase appears inside a longer sentence, preserve it exactly as written.
 
 Input:
 {text}
@@ -98,6 +102,10 @@ EXAMPLES OF CORRECT BEHAVIOR:
 
 ❌ WRONG: "Multiple APIs and VPNs" → "Multiple Apis and Vpns"
 ✅ CORRECT: "Multiple APIs and VPNs" → "Multiple APIs and VPNs"
+• Fortinet product names must remain EXACTLY as official branding.
+• Any occurrence of the product name "Fortinet Security Fabric" must remain EXACTLY as official branding.
+• Never change the casing of "Security" or "Fabric" when they are part of "Fortinet Security Fabric".
+• If the phrase appears inside a longer sentence, preserve it exactly as written.
 Input:
 {text}
 

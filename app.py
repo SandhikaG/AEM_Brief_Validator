@@ -464,7 +464,7 @@ def main():
                     "Fix": st.column_config.TextColumn("Fix", width="large"),
                     "Recommended": st.column_config.TextColumn("Recommended", width="large"),
                 }
-      
+                
                 
                 st.data_editor(
                     failed_table,
